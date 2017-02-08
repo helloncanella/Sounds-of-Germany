@@ -58,12 +58,12 @@ class IPASymbols extends Component {
 
     loadSound({description, audioPath, type}) {
 
-        return new Promise((resolve, reject) => { 
+        return new Promise((resolve, reject) => {
 
             var audioResource = new Sound(audioPath, '', (error) => {
-                if (error) { 
-                    console.log(error, audioPath); 
-                    reject(error); return 
+                if (error) {
+                    console.log(error, audioPath);
+                    reject(error); return
                 }
                 audioResource.setVolume(1)
                 resolve({ description, audioResource, type })
@@ -123,7 +123,8 @@ class IPASymbols extends Component {
 
         let self = this
 
-        this.releaseLastAudio()        
+        this.destroyOldAudioExecution()
+        this.releaseLastAudio()
 
         if (audios.length) {
 
@@ -139,16 +140,13 @@ class IPASymbols extends Component {
 
                 , newState = {}
 
-            // console.log(audioResource) 
+            this.setState({ audio: audioResource })
 
             audioResource.play()
 
-
             nextAudioExecution = setTimeout(function () { self.playAudiosSequentially(nextAudios) }, duration)
 
-
-            this.setState({ audio: audioResource, nextAudioExecution })
-
+            this.setState({ nextAudioExecution })
 
         } else {
             // this.destroyOldIPASelection()
@@ -173,14 +171,14 @@ class IPASymbols extends Component {
 
 
     onSelectedSymbol({IPASymbol, playExamples = false}) {
-
         this.destroyOldIPASelection()
+
 
         const onLoaded = (audiosLoaded) => {
             this.playAudiosSequentially(audiosLoaded)
         }
 
-        const onError = (error) => {            
+        const onError = (error) => {
             console.log(error)
         }
 
